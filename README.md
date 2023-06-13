@@ -1,0 +1,2 @@
+# FriendStorage
+Testing of MVVM
