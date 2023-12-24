@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace FriendStorage.UI.DataProvider
 {
-    public interface INavigationDataProvider
-    {
-        IEnumerable<Friend> GetAllFriends();
-    }
+  public interface INavigationDataProvider
+  {
+    IEnumerable<LookupItem> GetAllFriends();
+  }
 }
