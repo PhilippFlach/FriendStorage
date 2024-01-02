@@ -83,7 +83,7 @@ namespace FriendStorage.UITests.ViewModel
         {
             var friendEditVmMock = new Mock<IFriendEditViewModel>();
 
-            var fired = _viewModel.IsProperyChangedFired(() =>
+            var fired = _viewModel.IsPropertyChangedFired(() =>
             {
                 /* With the assignment below, the PropertyChanged event should be fired for the SelectedFriendEditViewModel property */
                 _viewModel.SelectedFriendEditViewModel = friendEditVmMock.Object;

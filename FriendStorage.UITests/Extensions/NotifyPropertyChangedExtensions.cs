@@ -12,7 +12,7 @@ namespace FriendStorage.UITests.Extensions
 {
     public static class NotifyPropertyChangedExtensions
     {
-        public static bool IsProperyChangedFired(
+        public static bool IsPropertyChangedFired(
             this INotifyPropertyChanged notifyPropertyChanged,
             Action action, string propertyName)
         {
