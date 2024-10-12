@@ -1,40 +1,76 @@
 ﻿using FriendStorage.Model;
+using System;
 using FriendStorage.UI.DataProvider;
+using FriendStorage.UI.Command;
+using System.Windows.Input;
+using FriendStorage.UI.Wrapper;
+using Prism.Events;
+using FriendStorage.UI.Events;
 
 namespace FriendStorage.UI.ViewModel
 {
     public interface IFriendEditViewModel
     {
-        void Load(int friendId);
-        Friend Friend { get; }
+        void Load(int? friendId);
+        FriendWrapper Friend { get; }
     }
     public class FriendEditViewModel : ViewModelBase, IFriendEditViewModel
     {
         private IFriendDataProvider _dataProvider;
-        private Friend _fiend;
+        private FriendWrapper _friend;
+        private IEventAggregator _eventAggregator;
 
-        public FriendEditViewModel(IFriendDataProvider dataProvider)
+        public FriendEditViewModel(IFriendDataProvider dataProvider,
+          IEventAggregator eventAggregator)
         {
-            this._dataProvider = dataProvider;
+            _dataProvider = dataProvider;
+            _eventAggregator = eventAggregator;
+            SaveCommand = new DelegateCommand(OnSaveExecute, OnSaveCanExecute);
         }
 
-        public Friend Friend
+        public ICommand SaveCommand { get; private set; }
+
+        public FriendWrapper Friend
         {
             get
             {
-                return _fiend;
+                return _friend;
             }
-
-            private set
+            set
             {
-                _fiend = value;
+                _friend = value;
                 OnPropertyChanged();
             }
         }
-        public void Load(int friendId)
+
+        public void Load(int? friendId)
         {
-            var friend = _dataProvider.GetFriendById(friendId);
-            Friend = friend;
+            var friend = friendId.HasValue
+              ? _dataProvider.GetFriendById(friendId.Value)
+              : new Friend();
+
+            Friend = new FriendWrapper(friend);
+
+            Friend.PropertyChanged += Friend_PropertyChanged;
+
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+        }
+
+        private void Friend_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+        }
+
+        private void OnSaveExecute(object obj)
+        {
+            _dataProvider.SaveFriend(Friend.Model);
+            Friend.AcceptChanges();
+            _eventAggregator.GetEvent<FriendSavedEvent>().Publish(Friend.Model);
+        }
+
+        private bool OnSaveCanExecute(object arg)
+        {
+            return Friend != null && Friend.IsChanged;
         }
     }
 }
