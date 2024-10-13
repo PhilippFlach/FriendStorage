@@ -70,7 +70,7 @@ namespace FriendStorage.UITests.ViewModel
         [Fact]
         public void ShouldAddFriendEditViewModelAndLoadItWithIdNullAndSelectIt()
         {
-            _viewModel.AddFriendcommand.Execute(null);
+            _viewModel.AddFriendCommand.Execute(null);
 
             Assert.Equal(1, _viewModel.FriendEditViewModels.Count);
             var friendEditVm = _viewModel.FriendEditViewModels.First();
