@@ -37,19 +37,23 @@ namespace FriendStorage.UI.ViewModel
         }
         private void OnAddFriendExecute(object obj)
         {
+            SelectedFriendEditViewModel = CreateAndLoadFriendEditViewModel(null);
+        }
+
+        private IFriendEditViewModel CreateAndLoadFriendEditViewModel(int? friendId)
+        {
             var friendEditVm = _friendEditVmCreator();
             FriendEditViewModels.Add(friendEditVm);
-            friendEditVm.Load(null);
-            SelectedFriendEditViewModel = friendEditVm;
+            friendEditVm.Load(friendId);
+            return friendEditVm;
         }
+
         private void OnOpenFriendEditView(int friendId)
         {
             var friendEditVm = FriendEditViewModels.SingleOrDefault(vm => vm.Friend.Id == friendId);
             if (friendEditVm == null)
             {
-                friendEditVm = _friendEditVmCreator();
-                FriendEditViewModels.Add(friendEditVm);
-                friendEditVm.Load(friendId);
+                friendEditVm = CreateAndLoadFriendEditViewModel(friendId);
             }
             SelectedFriendEditViewModel = friendEditVm;
         }
