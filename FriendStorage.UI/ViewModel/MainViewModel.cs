@@ -1,4 +1,5 @@
 ﻿using FriendStorage.DataAccess;
+using FriendStorage.Model;
 using FriendStorage.UI.Command;
 using FriendStorage.UI.DataProvider;
 using FriendStorage.UI.Events;
@@ -27,17 +28,20 @@ namespace FriendStorage.UI.ViewModel
             AddFriendcommand = new DelegateCommand(OnAddFriendExecute);
         }
 
-        private void OnAddFriendExecute(object obj)
-        {
-            throw new NotImplementedException();
-        }
+
 
         private void OnCloseFriendTabExecute(object obj)
         {
             var friendEditVm = (IFriendEditViewModel)obj;
             FriendEditViewModels.Remove(friendEditVm);
         }
-
+        private void OnAddFriendExecute(object obj)
+        {
+            var friendEditVm = _friendEditVmCreator();
+            FriendEditViewModels.Add(friendEditVm);
+            friendEditVm.Load(null);
+            SelectedFriendEditViewModel = friendEditVm;
+        }
         private void OnOpenFriendEditView(int friendId)
         {
             var friendEditVm = FriendEditViewModels.SingleOrDefault(vm => vm.Friend.Id == friendId);
@@ -56,17 +60,17 @@ namespace FriendStorage.UI.ViewModel
         public INavigationViewModel NavigationViewModel { get; private set; }
         public ObservableCollection<IFriendEditViewModel> FriendEditViewModels { get; private set; }
 
-        public IFriendEditViewModel SelectedFriendEditViewModel 
+        public IFriendEditViewModel SelectedFriendEditViewModel
         {
-            get 
-            { 
-                return _selectedFriendEditViewModel; 
+            get
+            {
+                return _selectedFriendEditViewModel;
             }
-            set 
-            { 
-                _selectedFriendEditViewModel = value; 
+            set
+            {
+                _selectedFriendEditViewModel = value;
                 OnPropertyChanged();
-            } 
+            }
         }
 
         public void Load()
